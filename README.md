@@ -1,0 +1,4 @@
+TwiiterMiner
+============
+
+Twitter purpose mining
