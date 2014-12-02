@@ -20,7 +20,7 @@ fs.readFile(file, 'utf8', function(err, data) {
 		var entry = JSON.parse(d[i]);
 		if (!entry["created_at"]) continue;
 
-		console.log("!");
+		//console.log("!");
 
 		var lst = [];
 		for (var j = 0; j<FIELDS.length; j++) {
@@ -35,7 +35,7 @@ fs.readFile(file, 'utf8', function(err, data) {
 		result.push(lst);
 	}
 
-	console.log(result);
+	console.log(JSON.stringify(result));
 
 });
 
