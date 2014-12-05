@@ -35,12 +35,7 @@ public class AttributeDict {
 				return attributeVec.indexOf(attr);
 			}
 		}
-		BufferedWriter fout = new BufferedWriter(new FileWriter(new File(dictPath),true));
-		attributeVec.add(attribute);
-		fout.write(attribute);
-		fout.newLine();
-		fout.close();
-		return attributeVec.indexOf(attribute);
+		return -1;
 	}
 	
 	public int getDictSize() {
