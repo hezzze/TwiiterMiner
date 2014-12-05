@@ -16,24 +16,58 @@ module.exports = function(tweetlst) {
     //index -> how many docs term appears in
     var _termDocFrequency = {};
 
+    var _doc_tfidf_lst = [];
+
+    var _terms_tfidf = {};
+
     calc();
 
     // console.log(_dic);
-    // console.log(_terms);
-    // console.log(_termDocFrequency);
+    console.log(_terms);
+    console.log(_termDocFrequency);
+    console.log(_doc_tfidf_lst);
+    console.log(_terms_tfidf);
+
 
     this.idf = function(term) {
-    	return Math.log(tweetlst.length / _termDocFrequency[_dic[term]]) / Math.log(10);
+    	return idx_idf(_dic[term]);
+    }
+
+    function idx_idf(idx) {
+        return Math.log(tweetlst.length / _termDocFrequency[idx]) / Math.log(10);
     }
 
     function calc () {
-        for (var i = 0; i < tweetlst.length; i++) {
-            var uniq_term_idxs = processTweet(tweetlst[i]);
+        var doc_idx_freq_lst = [];
 
-            for (var j = 0; j < uniq_term_idxs.length; j++) {
-            	_termDocFrequency[uniq_term_idxs[j]]++;
+        for (var i = 0; i < tweetlst.length; i++) {
+            var doc_idx_freq = processTweet(tweetlst[i]);
+
+            doc_idx_freq_lst.push(doc_idx_freq);
+
+            for (var idx in doc_idx_freq) {
+            	_termDocFrequency[idx]++;
             }
         }
+
+        for (i = 0; i < tweetlst.length; i++) {
+
+            var doc_tfidf = {};
+            for (idx in doc_idx_freq_lst[i]) {
+                var tfidf = doc_idx_freq_lst[i][idx] * idx_idf(idx);
+                var term = _terms[idx]
+                doc_tfidf[term] = tfidf;
+
+                if (_terms_tfidf.hasOwnProperty(term)) {
+                    _terms_tfidf[term] += tfidf;
+                } else {
+                    _terms_tfidf[term] = tfidf;
+                }
+            }
+
+            _doc_tfidf_lst.push(doc_tfidf);
+        }
+
     }
 
     //reference: http://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
@@ -53,7 +87,7 @@ module.exports = function(tweetlst) {
 
         // console.log(tokens);
 
-        var tok_idxs = [];
+        var doc_idx_freq = {};
 
         var idx = -1;
         var tok = "";
@@ -72,10 +106,15 @@ module.exports = function(tweetlst) {
                 _termDocFrequency[idx] = 0;
             }
 
-            tok_idxs.push(idx);
+            if (doc_idx_freq.hasOwnProperty(idx)) {
+                doc_idx_freq[idx]++;
+            } else {
+                doc_idx_freq[idx] = 1;
+            }
+
         }
 
-        return uniq(tok_idxs);
+        return doc_idx_freq;
     }
 
 }

@@ -4,8 +4,12 @@
 
 var tfidf = require('./tfidf');
 
-var tweetlst = ["this is a a sample", "this is another another example example example"];
+// var tweetlst1 = ["this is a a sample", "this is another another example example example"];
 
-var t = new tfidf(tweetlst);
+// var t1 = new tfidf(tweetlst1);
 
-console.log(t.idf("example"))
+// console.log(t1.idf("example"))
+
+var tweetlst2 = ["this is a a sample", "this is another another example example example", "this is an example"];
+
+var t2 = new tfidf(tweetlst2);
