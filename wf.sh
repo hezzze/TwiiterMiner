@@ -1,5 +1,5 @@
 #!/bin/bash
-echo 'World Filter for passed ouputs'
+echo 'Words Filter for passed ouputs'
 
 node extractEnWords.js
 
