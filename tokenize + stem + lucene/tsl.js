@@ -1,12 +1,12 @@
-// Call the console.log function.
-console.log("Hello World");
+
+console.log("Impliments tokenize, stemming and lucene");
 
 fs = require('fs');
 var stem = require('stem-porter');
 //var sets = require('./simplesets');
 
-var file_Twitter = "/Users/wangyixun/Desktop/test.json";
-var file_dic = "/Users/wangyixun/Desktop/wordsEn.txt";
+var file_Twitter = "~/test.json";  // replace this test.json with your file
+var file_dic = "~/wordsEn.txt";
 
 var data = fs.readFileSync(file_Twitter, 'utf8');  //it's a string
 
@@ -70,52 +70,9 @@ for (var i =0; i<result.length; i++){
 	}
 }
 
-fs.writeFile('/Users/wangyixun/Desktop/output.txt', output, function (err) {
+fs.writeFile('~/output.txt', output, function (err) {
 	if (err) return console.log(err);
 	console.log('twitter + user > output.txt');
 });
-
-
-/*
-fs.readFile(file, 'utf8', function(err, data) {
-	var d= data.split('\n');
-	d.pop();
-	for (var i =0; i< d.length; i++) {
-
-		var entry = JSON.parse(d[i]);
-		if (!entry["created_at"]) continue;
-
-		result.push(entry);
-	}
-	//console.log(result[15]);
-	var words_vec, charcode, isEn = true, words_pool = [];
-	for (var j=0; j<result.length; j++){
-		words_vec = result[j].text.split(" ");
-		for (var m=0; m<words_vec.length; m++){
-			 for(var n=0; n<words_vec[m].length; n++){
-			 	charcode = words_vec[m].charCodeAt(n);
-			 	if( (charcode > 64 && charcode < 91) || (charcode > 96 && charcode < 123)){
-				//do nothing
-			 	}else{
-			 		isEn = false;
-			 		break
-			 	}
-			}
-			if (isEn){
-			 	words_pool.push(words_vec[m]);
-			 }
-			 else{
-			 	isEn = !isEn;
-			 }
-		}
-
-	}
-
-	fs.writeFile('/Users/wangyixun/Desktop/helloworld.txt', words_pool, function (err) {
-  		if (err) return console.log(err);
-  		console.log('Hello World > helloworld.txt');
-	});
-});
-*/
 
 
