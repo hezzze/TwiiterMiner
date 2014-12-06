@@ -15,45 +15,93 @@ import java.util.regex.Pattern;
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.Cluster;
 
+import compare.Comparer;
+
 import classification.Classifier;
 import clustering.Clustering;
-import clustering.Entity;
 import clustering.EntityWrapper;
 
 public class Controler {
 	public static void main(String[] args) {
 		//Arguments
-		String inputFileDirect = "/Users/weichengma/LabWork/RPI/merge_kb/output/";
+		Clustering clusterer=null;
+		String inputFileDirect = args[0];
 		File inputRoot = new File(inputFileDirect);
 		File[] inputFiles = inputRoot.listFiles();
 		List<EntityWrapper> ewList = new ArrayList<EntityWrapper>();
+		String dictPath=args[1];
+		double threshold=0.8;
+		//Split into parts
 		for(File inputFile : inputFiles) {
 			try {
-				BufferedReader EntityIn = new BufferedReader(new FileReader(inputFile));
-				List<String> attrList=new ArrayList<String>();
+				String classifiedPath="";
+				String clusteredPath="";
+				String corpus=inputFile.getName();
+				BufferedReader fin = new BufferedReader(new FileReader(inputFile));
 				String line;
-				String regex = "<[^>]*>";
-				Pattern p = Pattern.compile(regex);
-				line = EntityIn.readLine();
-				while((line = EntityIn.readLine())!=null) {
-					Matcher m = p.matcher(line);
-					String attrStr = "";
-					while(m.find()) {
-						attrStr = attrStr+m.group().replaceAll("[<>]*", "")+"&";
+				int fileInd=0;
+				File fRoot=new File("src/"+corpus+"_out/");
+				if(!fRoot.exists()) {
+					fRoot.mkdirs();
+				}
+				while((line = fin.readLine())!= null) {
+					BufferedWriter fout = 
+							new BufferedWriter(
+									new FileWriter(
+											new File("src/"+corpus+"_out/clusteringCorpus.txt"),true));
+					for(int i=0;i<2000-1;i++) {
+						fout.write(line);
+						fout.newLine();
+						line=fin.readLine();
+						if(line == null) {
+							break;
+						}
 					}
-					attrList.add(attrStr);
+					fout.close();
+					if(clusterer != null) {
+						//Classifier exists
+						
+					}
+					else {
+						//No classifier
+						clusterer=new Clustering();
+					}
+					clusterer.initialize("src/"+corpus+"_out/clusteringCorpus.txt", dictPath, corpus+"_"+fileInd);
+					List<Cluster<EntityWrapper>> res = clusterer.cluster();
+					BufferedWriter clusterOut=new BufferedWriter(new FileWriter(new File(clusteredPath)));
+					for(int i=0;i<res.size();i++) {
+						//Cluster i
+						for(EntityWrapper ew : res.get(i).getPoints()) {
+							if(ew == null) {
+								continue;
+							}
+							if(!ew.getCorpusID().equals(corpus+"_"+fileInd)) {
+								continue;
+							}
+							for(int j=0;j<ew.getPoint().length;j++) {
+								clusterOut.write(ew.getPoint()[j]+" ");
+							}
+							clusterOut.write(i);
+							clusterOut.newLine();
+						}
+					}
+					clusterOut.close();
+					if(Comparer.compare(clusteredPath, classifiedPath)>threshold) {
+						//Classify all, break
+						
+						break;
+					}
+					
+					String featurePath="src/features/";
+					fRoot=new File(featurePath);
+					if(!fRoot.exists()) {
+						fRoot.mkdirs();
+					}
+					
+
+					fileInd++;
 				}
-				EntityIn.close();
-				String[] strArr=new String[attrList.size()];
-				for(int i=0;i<strArr.length;i++) {
-					strArr[i]=attrList.get(i);
-				}
-				Entity entTmp=new Entity(strArr,"&");
-				EntityWrapper ew = new EntityWrapper(entTmp,"src/newDict.dict");
-				if(ew.getName() == null) {
-					continue;
-				}
-				ewList.add(ew);
+				fin.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -62,41 +110,5 @@ public class Controler {
 				e.printStackTrace();
 			}
 		}
-		try {
-			String OutputPath = "src/clusterRes/";
-			File fout = new File(OutputPath);
-			if(!fout.exists()) {
-				fout.mkdirs();
-			}
-			Clustering clusterer = new Clustering();
-			clusterer.initialize(ewList);
-			List<Cluster<EntityWrapper>> res = clusterer.cluster();
-			BufferedWriter clusterResOut=new BufferedWriter(new FileWriter(new File(OutputPath+"res.txt")));
-			for(int i=0;i<res.size();i++) {
-				//Cluster i
-				System.out.println(res.size());
-				clusterResOut.write("--Cluster "+i);
-				clusterResOut.newLine();
-				for(EntityWrapper ew : res.get(i).getPoints()) {
-					if(ew == null) {
-						continue;
-					}
-					Entity entities = ew.getEntities();
-					clusterResOut.write("--EntityName ");
-					clusterResOut.newLine();
-					clusterResOut.write(ew.getName());
-					clusterResOut.newLine();
-					for(int j=0;j<entities.getAttribute().length;j++) {
-						clusterResOut.write(entities.getAttribute()[j]);
-						clusterResOut.newLine();
-					}
-				}
-			}
-			clusterResOut.close();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		String trainingFilePath="",testFilePath="";
-		Classifier classifier=new Classifier();
 	}
 }

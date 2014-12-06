@@ -5,13 +5,14 @@ import java.util.List;
 import org.apache.commons.math3.ml.clustering.Clusterable;
 
 public class EntityWrapper implements Clusterable {
-	private int corpusID;
+	private String corpusID;
 	private String user;
 	private double[] position;
 	private static AttributeDict dict;
 	
-	public EntityWrapper(String user, String tweet, String dictPath, int dimension) 
+	public EntityWrapper(String user, String tweet, String dictPath, int dimension, String corpus) 
 			throws Exception {
+		this.corpusID=corpus;
 		this.user=user;
 		position=new double[dimension];
 		for(int i=0;i<dimension;i++) {
@@ -37,5 +38,9 @@ public class EntityWrapper implements Clusterable {
 	
 	public AttributeDict getDict() {
 		return dict;
+	}
+	
+	public String getCorpusID() {
+		return corpusID;
 	}
 }

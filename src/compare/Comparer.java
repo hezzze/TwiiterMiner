@@ -1,51 +1,30 @@
 package compare;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.Vector;
 
 public class Comparer {
-	private List<CompareWrapper> original;
-	private List<CompareWrapper> newly;
-	private double threshold;
-	public Comparer() {
-		original=new ArrayList<CompareWrapper>();
-		newly=new ArrayList<CompareWrapper>();
-	}
-	
-	public void build(CompareWrapper[] documented,CompareWrapper[] newlycome) {
-		for(CompareWrapper cw : documented) {
-			original.add(cw);
-		}
-		for(CompareWrapper cw : newlycome) {
-			newly.add(cw);
-		}
-	}
-	
-	public boolean staticPos(double threshold) {
-		this.threshold=threshold;
-		double similarity=calcSimilarity();
-		if(similarity >= this.threshold) {
-			return true;
-		}
-		return false;
-	}
-	
-	public double calcSimilarity() {
-		double totalSim=0.0;
+	public static double compare(String filePath1, String filePath2) throws Exception {
 		double similarity=0.0;
-		for(int i=0;i<newly.size();i++) {
-			for(CompareWrapper cw : original) {
-				double res=calcSimilarity(cw,newly.get(i));
-				if(similarity < res) {
-					similarity = res;
-				}
-			}
-			totalSim=totalSim+similarity/newly.size();
+		Vector<String> Vec1=new Vector<String>(),Vec2=new Vector<String>();
+		BufferedReader f1In=new BufferedReader(new FileReader(new File(filePath1)));
+		BufferedReader f2In=new BufferedReader(new FileReader(new File(filePath2)));
+		String line;
+		while((line = f1In.readLine())!=null) {
+			Vec1.add(line);
 		}
-		return totalSim;
-	}
-	
-	public double calcSimilarity(CompareWrapper orig,CompareWrapper newly) {
-		return orig.CompareTo(newly);
+		while((line = f2In.readLine())!=null) {
+			Vec2.add(line);
+		}
+		f1In.close();
+		f2In.close();
+		int same=0;
+		for(int i=0;i<Vec1.size();i++) {
+			if(Vec2.indexOf(Vec1.get(i))!=-1) {
+				same++;
+			}
+		}
+		similarity=(double)same/(double)Vec1.size();
+		return similarity;
 	}
 }
