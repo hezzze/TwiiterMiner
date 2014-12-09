@@ -47,7 +47,7 @@ for(var entry in single_Twitter){
 	result.push(temp)
 }
 
-var output = '', twitter, user, doc_output, words_vec, stemWord;
+var output = [], twitter, user, doc_output, words_vec, stemWord;
 for (var i =0; i<result.length; i++){
 	//initial doc_output first
 	doc_output = ''
@@ -62,31 +62,37 @@ for (var i =0; i<result.length; i++){
 	}
 	//replace non-letter with space
 	twitter = twitter.replace(/[^a-zA-Z]/g, ' ');
-	words_vec = twitter.split(' ');
+	words_vec = twitter.split(' ').filter(function(entry) {
+		return entry.length > 0;
+	});
 	for(var j=0; j<words_vec.length; j++){
 		//stemming before lucene
 		stemWord = stem(words_vec[j]);
 
-		console.log(stemWord);
+		//console.log(stemWord);
 
 		if(dic_arr[stemWord] == 1){
 			doc_output += stemWord + ' ';
 		}
 		else{
 			// show no mercy to non-En!
-			break;
+			continue;
 		}
 	}
+
+
+
+	//console.log(doc_output);
 	// if this twitter is written in En or has url, then store it with user info
 	//USER_FIELDS = ["id", "name", "screen_name", "location"]
-	if(doc_output){
-		output += doc_output + '\n';
-		user = {id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
-		output += JSON.stringify(user) + '\n';
+	if(doc_output.length > 0) {
+		output.push(doc_output);
+		//user = {id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
+		//output += JSON.stringify(user) + '\n';
 	}
 }
 
-fs.writeFile(outfile, output, function (err) {
+fs.writeFile(outfile, JSON.stringify(output), function (err) {
 	if (err) return console.log(err);
 	console.log('twitter + user > output.txt');
 });

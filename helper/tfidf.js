@@ -18,7 +18,9 @@ module.exports = function(tweetlst) {
 
     var _doc_tfidf_lst = [];
 
-    var _terms_tfidf = {};
+    var _terms_tfidf_sum = {};
+
+    var _result = [];
 
     calc();
 
@@ -26,8 +28,11 @@ module.exports = function(tweetlst) {
     // console.log(_terms);
     // console.log(_termDocFrequency);
     // console.log(_doc_tfidf_lst);
-    // console.log(_terms_tfidf);
+    //console.log(_terms_tfidf_sum);
 
+    this.get_result = function(n) {
+        return _result.slice(0,n);
+    }
 
     this.idf = function(term) {
     	return idx_idf(_dic[term]);
@@ -58,15 +63,29 @@ module.exports = function(tweetlst) {
                 var term = _terms[idx]
                 doc_tfidf[term] = tfidf;
 
-                if (_terms_tfidf.hasOwnProperty(term)) {
-                    _terms_tfidf[term] += tfidf;
+                if (_terms_tfidf_sum.hasOwnProperty(term)) {
+                    _terms_tfidf_sum[term] += tfidf;
                 } else {
-                    _terms_tfidf[term] = tfidf;
+                    _terms_tfidf_sum[term] = tfidf;
                 }
             }
 
             _doc_tfidf_lst.push(doc_tfidf);
         }
+
+        for (var t in _terms_tfidf_sum) {
+            var term_tfidf_avg = _terms_tfidf_sum[t] / _termDocFrequency[_dic[t]];
+            _result.push({
+                "term": t,
+                "tfidf": term_tfidf_avg 
+            });
+        }
+
+        _result.sort(function(a, b) {
+           return b.tfidf - a.tfidf;
+        });
+
+        //console.log(_result);
 
     }
 
