@@ -8,6 +8,16 @@ var stem = require('stem-porter');
 var file_Twitter = "~/test.json";  // replace this test.json with your file
 var file_dic = "~/wordsEn.txt";
 
+if (process.argv.length  == 5) {
+	file_Twitter = process.argv[2];
+	file_dic = process.argv[3];
+	outfile = process.argv[4];
+}
+
+console.log(file_Twitter);
+console.log(file_dic);
+console.log(outfile);
+
 var data = fs.readFileSync(file_Twitter, 'utf8');  //it's a string
 
 var dictionary = fs.readFileSync(file_dic, 'utf8');  //it's a string
@@ -42,6 +52,9 @@ for (var i =0; i<result.length; i++){
 	//initial doc_output first
 	doc_output = ''
 	twitter = result[i].text;
+
+	//if (i === Math.floor(result.length /2)) console.log(twitter);
+
 	//check, if any, url exists in this twitter
 	if(new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(twitter)) {
 		// if multi-url within this twitter doc, only one counted
@@ -53,6 +66,9 @@ for (var i =0; i<result.length; i++){
 	for(var j=0; j<words_vec.length; j++){
 		//stemming before lucene
 		stemWord = stem(words_vec[j]);
+
+		console.log(stemWord);
+
 		if(dic_arr[stemWord] == 1){
 			doc_output += stemWord + ' ';
 		}
@@ -70,7 +86,7 @@ for (var i =0; i<result.length; i++){
 	}
 }
 
-fs.writeFile('~/output.txt', output, function (err) {
+fs.writeFile(outfile, output, function (err) {
 	if (err) return console.log(err);
 	console.log('twitter + user > output.txt');
 });

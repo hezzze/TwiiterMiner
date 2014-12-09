@@ -23,10 +23,10 @@ module.exports = function(tweetlst) {
     calc();
 
     // console.log(_dic);
-    console.log(_terms);
-    console.log(_termDocFrequency);
-    console.log(_doc_tfidf_lst);
-    console.log(_terms_tfidf);
+    // console.log(_terms);
+    // console.log(_termDocFrequency);
+    // console.log(_doc_tfidf_lst);
+    // console.log(_terms_tfidf);
 
 
     this.idf = function(term) {
@@ -80,7 +80,7 @@ module.exports = function(tweetlst) {
 
     //process a tweet and return uniq terms
     function processTweet(content) {
-        var tokens = content.split(/[^a-zA-Z0-9]/).filter(function(w) {
+        var tokens = content.split(/[^a-zA-Z0-9@]/).filter(function(w) {
             return w.length > 0
         });
 
