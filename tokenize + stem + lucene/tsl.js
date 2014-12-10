@@ -47,7 +47,9 @@ for(var entry in single_Twitter){
 	result.push(temp)
 }
 
-var output = [], twitter, user, doc_output, words_vec, stemWord;
+var regx4url = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?");
+
+var output = [], twitter, user, doc_output, words_vec, stemWord, counter = 1, isEn = true;
 for (var i =0; i<result.length; i++){
 	//initial doc_output first
 	doc_output = ''
@@ -56,9 +58,10 @@ for (var i =0; i<result.length; i++){
 	//if (i === Math.floor(result.length /2)) console.log(twitter);
 
 	//check, if any, url exists in this twitter
-	if(new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(twitter)) {
+	if(regx4url.test(twitter)) {
 		// if multi-url within this twitter doc, only one counted
         doc_output += '@url ';
+        twitter = twitter.replace(regx4url, ' ');
 	}
 	//replace non-letter with space
 	twitter = twitter.replace(/[^a-zA-Z]/g, ' ');
@@ -74,13 +77,23 @@ for (var i =0; i<result.length; i++){
 		if(dic_arr[stemWord] == 1){
 			doc_output += stemWord + ' ';
 		}
-		else{
-			// show no mercy to non-En!
+		else if (counter < words_vec.length/2){
+			// show a little mercy to non-En!
+			counter ++;
 			continue;
+		}
+		else{
+			// more than half of words are non-En, so abandon
+			isEn = false;
+			break;
 		}
 	}
 
-
+	counter = 0;
+	if(!isEn){
+		isEn = true;
+		continue;
+	}
 
 	//console.log(doc_output);
 	// if this twitter is written in En or has url, then store it with user info
@@ -96,5 +109,4 @@ fs.writeFile(outfile, output, function (err) {
 	if (err) return console.log(err);
 	//console.log('twitter + user > output.txt');
 });
-
 
