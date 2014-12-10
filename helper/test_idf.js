@@ -6,6 +6,11 @@ var fs = require('fs');
 
 var tfidf = require('./tfidf');
 
+var infile = "../out1";
+
+if (process.argv.length > 2) {
+	infile = process.argv[2];
+}
 // var tweetlst1 = ["this is a a sample", "this is another another example example example"];
 
 // var t1 = new tfidf(tweetlst1);
@@ -16,13 +21,15 @@ var tfidf = require('./tfidf');
 
 //var t2 = new tfidf(tweetlst2);
 
-var data = fs.readFileSync("../out1", 'utf8');
+var tweets = fs.readFileSync(infile, 'utf8').split('\n').filter(function(d, i) {
+	return i%2 === 1;
+});
 
-var tweets = JSON.parse(data);
+//console.log(tweets);
 
 var t = new tfidf(tweets);
 
-var result = t.get_result(300);
+var result = t.get_result();
 
 var output = "";
 

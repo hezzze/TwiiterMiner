@@ -31,7 +31,8 @@ module.exports = function(tweetlst) {
     //console.log(_terms_tfidf_sum);
 
     this.get_result = function(n) {
-        return _result.slice(0,n);
+        var x = n || _result.length;
+        return _result.slice(0,x);
     }
 
     this.idf = function(term) {
