@@ -1,5 +1,5 @@
 
-console.log("Impliments tokenize, stemming and lucene");
+//console.log("Impliments tokenize, stemming and lucene");
 
 fs = require('fs');
 var stem = require('stem-porter');
@@ -14,9 +14,9 @@ if (process.argv.length  == 5) {
 	outfile = process.argv[4];
 }
 
-console.log(file_Twitter);
-console.log(file_dic);
-console.log(outfile);
+//console.log(file_Twitter);
+//console.log(file_dic);
+//console.log(outfile);
 
 var data = fs.readFileSync(file_Twitter, 'utf8');  //it's a string
 
@@ -86,15 +86,15 @@ for (var i =0; i<result.length; i++){
 	// if this twitter is written in En or has url, then store it with user info
 	//USER_FIELDS = ["id", "name", "screen_name", "location"]
 	if(doc_output.length > 0) {
-		output.push(doc_output);
-		//user = {id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
-		//output += JSON.stringify(user) + '\n';
+		output += doc_output + '\n';
+		user = {id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
+		output += JSON.stringify(user) + '\n';
 	}
 }
 
-fs.writeFile(outfile, JSON.stringify(output), function (err) {
+fs.writeFile(outfile, output, function (err) {
 	if (err) return console.log(err);
-	console.log('twitter + user > output.txt');
+	//console.log('twitter + user > output.txt');
 });
 
 
