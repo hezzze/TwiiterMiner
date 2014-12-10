@@ -24,6 +24,8 @@ module.exports = function(tweetlst) {
 
     calc();
 
+    console.log(_terms.length);
+
     // console.log(_dic);
     // console.log(_terms);
     // console.log(_termDocFrequency);

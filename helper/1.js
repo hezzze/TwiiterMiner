@@ -14,6 +14,8 @@ var tweets = fs.readFileSync(infile, 'utf8').split('\n').filter(function(d, i) {
 
 var result = [];
 
+var dict ={};
+
 var it;
 for (var i = 0; i < tweets.length; i++) {
 	var ws = tweets[i].split(' ').filter(function(d) { return d.length > 0;});
@@ -28,12 +30,19 @@ for (var i = 0; i < tweets.length; i++) {
 		it = [];
 		w = ws[j];
 
+		if (dict.hasOwnProperty(w)) {
+			continue;
+		} else {
+			dict[w] = true;
+		}
+
 		it.push(w);
 		it.push((j-1 >= 0 ? ws[j-1] : "-"));
 		it.push((j-2 >= 0 ? ws[j-2] : "-"));
 		it.push((j+1 < ws.length ? ws[j+1] : "-"));
 		it.push((j+2 < ws.length ? ws[j+2] : "-"));
 
+		
 		if (it.length > 0) result.push(it);
 	}
 

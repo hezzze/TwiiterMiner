@@ -6,7 +6,7 @@ var fs = require('fs');
 
 var tfidf = require('./tfidf');
 
-var infile = "../out1";
+var infile = "../corpus";
 
 if (process.argv.length > 2) {
 	infile = process.argv[2];
