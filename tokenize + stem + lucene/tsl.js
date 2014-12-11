@@ -65,7 +65,7 @@ for (var i =0; i<result.length; i++){
 	}
 	//replace non-letter with space
 	twitter = twitter.replace(/[^a-zA-Z]/g, ' ');
-	words_vec = twitter.split(' ').filter(function(entry) {
+	words_vec = twitter.toLowerCase().split(' ').filter(function(entry) {
 		return entry.length > 0;
 	});
 	for(var j=0; j<words_vec.length; j++){
