@@ -99,7 +99,7 @@ for (var i =0; i<result.length; i++){
 	// if this twitter is written in En or has url, then store it with user info
 	//USER_FIELDS = ["id", "name", "screen_name", "location"]
 	if(doc_output.length > 0) {
-		user = {id:result[i]['id'], user_id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
+		user = {id:result[i]['text'], user_id:result[i]['user']['id'], name:result[i]['user']['name'], screen_name:result[i]['user']['screen_name'], location:result[i]['user']['location']};
 		output += JSON.stringify(user) + '\n';
 		output += doc_output + '\n';
 	}
