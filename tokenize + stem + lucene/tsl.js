@@ -69,12 +69,12 @@ for (var i =0; i<result.length; i++){
 		return entry.length > 0;
 	});
 	for(var j=0; j<words_vec.length; j++){
-		//stemming before lucene
-		stemWord = stem(words_vec[j]);
 
 		//console.log(stemWord);
 
 		if(dic_arr[stemWord] == 1){
+			//stemming before lucene
+			stemWord = stem(words_vec[j]);
 			doc_output += stemWord + ' ';
 		}
 		else if (counter < words_vec.length/2){
