@@ -72,7 +72,7 @@ for (var i =0; i<result.length; i++){
 
 		//console.log(stemWord);
 
-		if(dic_arr[stemWord] == 1){
+		if(dic_arr[words_vec[j]] == 1){
 			//stemming before lucene
 			stemWord = stem(words_vec[j]);
 			doc_output += stemWord + ' ';
